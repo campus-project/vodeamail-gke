@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vodeamail
+  labels:
+    stage: production
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: vodeamail-frontend-ip
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: www.vodeacloud.com
+      http:
+        paths:
+          - path: /*
+            pathType: Prefix
+            backend:
+              service:
+                name: vodeamail-frontend
+                port:
+                  number: 8080

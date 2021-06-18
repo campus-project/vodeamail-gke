@@ -1,0 +1,40 @@
+version: "3.3"
+services: 
+    api-gateway:
+        image: tanyudii/vodeamail-api-gateway:latest
+        container_name: api-gateway
+        restart: unless-stopped
+        ports:
+            - 3000:3000
+        environment: 
+            - NODE_ENV=local
+            - APP_PORT=3000
+            - KAFKA_CLIENT_ID=gateway
+            - KAFKA_BROKER=cp-kafka:9092
+            - KAFKA_CONSUMER_GROUP_ID=gateway-consumer
+            - DB_HOST=mysql
+            - DB_PORT=3306
+            - DB_DATABASE=vodeamail-api-gateway
+            - DB_USER=root
+            - DB_PASSWORD=secret
+            - JWT_SECRET=secret
+            - JWT_EXPIRES_IN=8h
+        networks: 
+            - docker_infrastrucuture
+    public:
+        image: tanyudii/vodeamail-public:latest
+        container_name: public
+        restart: unless-stopped
+        ports:
+            - 3010:3010
+        environment: 
+            - NODE_ENV=local
+            - APP_PORT=3010
+            - KAFKA_CLIENT_ID=public
+            - KAFKA_BROKER=cp-kafka:9092
+            - KAFKA_CONSUMER_GROUP_ID=public-consumer
+        networks: 
+            - docker_infrastrucuture
+networks:
+    docker_infrastrucuture:
+        external: true
