@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nestjs-first
+  labels:
+    stage: example
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nestjs-first
+      stage: example
+  template:
+    metadata:
+      labels:
+        app: nestjs-first
+        stage: example
+    spec:
+      containers:
+        - name: nestfirst
+          image: tanyudii/nest-first-service
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nestfirst-environment
+          ports:
+            - containerPort: 3000
+      restartPolicy: Always
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nestjs-second
+  labels:
+    stage: example
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nestjs-second
+      stage: example
+  template:
+    metadata:
+      labels:
+        app: nestjs-second
+        stage: example
+    spec:
+      containers:
+        - name: nestsecond
+          image: tanyudii/nest-second-service
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nestsecond-environment
+          ports:
+            - containerPort: 3000
+      restartPolicy: Always
