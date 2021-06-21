@@ -7,14 +7,8 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: vodeacloud-ip
 spec:
-  rules:
-    - host: www.vodea.cloud
-      http:
-        paths:
-          - path: /*
-            pathType: Prefix
-            backend:
-              service:
-                name: vodeamail-frontend
-                port:
-                  number: 80
+  defaultBackend:
+    service:
+      name: frontend
+      port:
+        number: 80

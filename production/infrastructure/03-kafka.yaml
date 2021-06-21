@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: kafka-env
-  namespace: vodeamail-infrastructure
+  namespace: infrastructure
 data:
   KAFKA_BROKER_ID: "1"
   KAFKA_kafka_CONNECT: 'kafka:2181'
@@ -22,7 +22,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kafka
-  namespace: vodeamail-infrastructure
+  namespace: infrastructure
   labels:
     stage: production
 spec:
@@ -45,7 +45,7 @@ spec:
             - name: KAFKA_BROKER_ID
               value: "1"
             - name: KAFKA_ZOOKEEPER_CONNECT
-              value: 'zookeeper:2181'
+              value: 'zookeeper.yaml:2181'
             - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
               value: 'PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
             - name: KAFKA_ADVERTISED_LISTENERS
@@ -76,7 +76,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: kafka
-  namespace: vodeamail-infrastructure
+  namespace: infrastructure
   labels:
     app: kafka
     stage: production

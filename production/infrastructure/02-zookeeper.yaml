@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: zookeper-env
-  namespace: vodeamail-infrastructure
+  namespace: infrastructure
 data:
   ZOOKEEPER_CLIENT_PORT: "2181"
   ZOOKEEPER_TICK_TIME: "2000"
@@ -13,7 +13,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: zookeeper
-  namespace: vodeamail-infrastructure
+  namespace: infrastructure
   labels:
     stage: production
 spec:
@@ -29,7 +29,7 @@ spec:
         stage: production
     spec:
       containers:
-        - name: zookeeper
+        - name: zookeeper.yaml
           image: confluentinc/cp-zookeeper
           imagePullPolicy: Always
           envFrom:
@@ -45,7 +45,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: zookeeper
-  namespace: vodeamail-infrastructure
+  namespace: infrastructure
   labels:
     app: zookeeper
     stage: production
