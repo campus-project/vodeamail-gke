@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-campaign
+  namespace: vodeamail
+  labels:
+    stage: production
+spec:
+  type: ClusterIP
+  selector:
+    app: ms-campaign
+    stage: production
+  ports:
+    - port: 3030
+      targetPort: 3030
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-campaign-lb
+  namespace: vodeamail
+  labels:
+    stage: production
+spec:
+  type: LoadBalancer
+  selector:
+    app: ms-campaign
+    stage: production
+  ports:
+    - port: 3030
+      targetPort: 3030
