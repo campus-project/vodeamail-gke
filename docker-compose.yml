@@ -1,27 +1,45 @@
 version: "3.3"
 services:
-  nest-first-service:
-    image: tanyudii/nest-first-service
-    container_name: nest
+  gateway:
+    image: tanyudii/vodeamail-api-gateway
+    container_name: gateway
     restart: unless-stopped
     ports:
       - 3000:3000
     environment:
-      - APP_PORT=3000
-      - APP_MESSAGE=Hello From First
-    networks:
-      - example
-  nest-second-service:
-    image: tanyudii/nest-second-service
-    container_name: nest-second-service
+      - APP_PORT: 3000
+  public:
+    image: tanyudii/vodeamail-public
+    container_name: gateway
     restart: unless-stopped
     ports:
-      - 3010:3010
+      - 3001:3001
     environment:
-      - APP_PORT=3010
-      - APP_MESSAGE=Hello From Second
-    networks:
-      - example
+      - APP_PORT: 3001
+  account-service:
+    image: tanyudii/vodeamail-account-service
+    container_name: account-service
+    restart: unless-stopped
+    environment:
+      - APP_PORT: 3010
+  audience-service:
+    image: tanyudii/vodeamail-audience-service
+    container_name: audience-service
+    restart: unless-stopped
+    environment:
+      - APP_PORT: 3020
+  campaign-service:
+    image: tanyudii/vodeamail-campaign-service
+    container_name: campaign-service
+    restart: unless-stopped
+    environment:
+      - APP_PORT: 3030
+  mailer-service:
+    image: tanyudii/vodeamail-mailer-service
+    container_name: mailer-service
+    restart: unless-stopped
+    environment:
+      - APP_PORT: 3100
 networks:
-  example:
+  infrastructure:
     driver: bridge

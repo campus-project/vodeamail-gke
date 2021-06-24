@@ -1,33 +1,33 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ms-mailer
+  name: ms-audience
   namespace: vodeamail
   labels:
     stage: production
 spec:
   type: ClusterIP
   selector:
-    app: ms-mailer
+    app: ms-audience
     stage: production
   ports:
-    - port: 3100
-      targetPort: 3100
+    - port: 3020
+      targetPort: 3020
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: ms-mailer-lb
+  name: ms-audience-lb
   namespace: vodeamail
   labels:
     stage: production
 spec:
   type: LoadBalancer
   selector:
-    app: ms-mailer
+    app: ms-audience
     stage: production
   ports:
-    - port: 3100
-      targetPort: 3100
+    - port: 80
+      targetPort: 3020

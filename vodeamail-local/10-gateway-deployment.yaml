@@ -1,42 +1,47 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: public-config
+  name: gateway-config
   namespace: vodeamail
 data:
   APP_HOST: "0.0.0.0"
   APP_PORT: "3000"
+  DB_DATABASE: "vodeamail-api-gateway"
 
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: public
+  name: gateway
   namespace: vodeamail
   labels:
     stage: production
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: public
+      app: gateway
       stage: production
   template:
     metadata:
       labels:
-        app: public
+        app: gateway
         stage: production
     spec:
       containers:
-        - name: public
-          image: tanyudii/vodeamail-public
+        - name: gateway
+          image: tanyudii/vodeamail-api-gateway
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
           envFrom:
             - configMapRef:
-                name: public-config
+                name: gateway-config
+            - configMapRef:
+                name: application-services
             - secretRef:
-                name: public-jwt
+                name: gateway-jwt
+            - secretRef:
+                name: vodea-db-staging
       restartPolicy: Always

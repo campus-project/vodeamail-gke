@@ -18,7 +18,7 @@ metadata:
   labels:
     stage: production
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: ms-campaign
@@ -38,6 +38,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: ms-campaign-config
+            - configMapRef:
+                name: application-services
             - secretRef:
                 name: vodea-db-staging
       restartPolicy: Always
