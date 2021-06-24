@@ -40,5 +40,4 @@ spec:
                 name: ms-audience-config
             - secretRef:
                 name: vodea-db-staging
-
       restartPolicy: Always

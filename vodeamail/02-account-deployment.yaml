@@ -6,8 +6,6 @@ metadata:
 data:
   APP_HOST: "0.0.0.0"
   APP_PORT: "3010"
-  MAILER_SERVICE_HOST: "ms-mailer.vodeamail.svc.cluster.local"
-  MAILER_SERVICE_PORT: "3100"
   DB_DATABASE: "vodeamail-account-service"
 
 ---
@@ -40,7 +38,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: ms-account-config
+            - configMapRef:
+                name: application-services
             - secretRef:
                 name: vodea-db-staging
-
       restartPolicy: Always
