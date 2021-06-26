@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mailhog-staging
+  namespace: vodeamail
+data:
+  MAIL_HOST: MTY3Ljk5LjczLjE3MA==
+  MAIL_PORT: MTAyNQ==
+  MAIL_USERNAME: dGVzdHVzZXI=
+  MAIL_PASSWORD: dGVzdHBhc3N3b3Jk
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ms-mailer-config
+  namespace: vodeamail
+data:
+  APP_HOST: "0.0.0.0"
+  APP_PORT: "3100"
+  DB_DATABASE: "vodeamail-mailer-service"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-mailer
+  namespace: vodeamail
+  labels:
+    stage: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-mailer
+      stage: production
+  template:
+    metadata:
+      labels:
+        app: ms-mailer
+        stage: production
+    spec:
+      volumes:
+        - name: mysql-account-secret
+          secret:
+            secretName: vodeacloud-mysql-account
+      containers:
+        - name: cloud-sql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.17
+          command:
+            - "/cloud_sql_proxy"
+            - "-instances=vodea-cloud:asia-southeast2:mysql-1=tcp:3306"
+            - "-credential_file=/secrets/service_account.json"
+          securityContext:
+            runAsNonRoot: true
+          volumeMounts:
+            - name: mysql-account-secret
+              mountPath: /secrets/
+              readOnly: true
+        - name: ms-mailer
+          image: asia.gcr.io/vodea-cloud/vodeamail-mailer-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3100
+          envFrom:
+            - configMapRef:
+                name: ms-mailer-config
+            - secretRef:
+                name: vodeacloud-mysql
+            - secretRef:
+                name: mailhog-staging
+      restartPolicy: Always

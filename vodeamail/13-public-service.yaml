@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: public
+  namespace: vodeamail
+  labels:
+    stage: production
+spec:
+  type: ClusterIP
+  selector:
+    app: public
+    stage: production
+  ports:
+    - port: 3000
+      targetPort: 3000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: public-lb
+  namespace: vodeamail
+  labels:
+    stage: production
+spec:
+  type: LoadBalancer
+  selector:
+    app: public
+    stage: production
+  ports:
+    - port: 80
+      targetPort: 3000

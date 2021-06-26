@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ms-campaign-config
+  namespace: vodeamail
+data:
+  APP_HOST: "0.0.0.0"
+  APP_PORT: "3030"
+  DB_DATABASE: "vodeamail-campaign-service"
+  BASE_UNSUBSCRIBE_URL: http://www.vodea.cloud/a/u
+  BASE_CLICK_TRACKER_URL: http://public.vodea.cloud/v1/c
+  BASE_OPEN_TRACKER_URL: http://public.vodea.cloud/v1/o
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-campaign
+  namespace: vodeamail
+  labels:
+    stage: production
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ms-campaign
+      stage: production
+  template:
+    metadata:
+      labels:
+        app: ms-campaign
+        stage: production
+    spec:
+      volumes:
+        - name: mysql-account-secret
+          secret:
+            secretName: vodeacloud-mysql-account
+      containers:
+        - name: cloud-sql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.17
+          command:
+            - "/cloud_sql_proxy"
+            - "-instances=vodea-cloud:asia-southeast2:mysql-1=tcp:3306"
+            - "-credential_file=/secrets/service_account.json"
+          securityContext:
+            runAsNonRoot: true
+          volumeMounts:
+            - name: mysql-account-secret
+              mountPath: /secrets/
+              readOnly: true
+        - name: ms-campaign
+          image: asia.gcr.io/vodea-cloud/vodeamail-campaign-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3030
+          envFrom:
+            - configMapRef:
+                name: ms-campaign-config
+            - configMapRef:
+                name: application-services
+            - secretRef:
+                name: vodeacloud-mysql
+      restartPolicy: Always

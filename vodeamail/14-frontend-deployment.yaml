@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: vodeamail
+  labels:
+    stage: production
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+      stage: production
+  template:
+    metadata:
+      name: frontend
+      labels:
+        app: frontend
+        stage: production
+    spec:
+      containers:
+        - name: frontend
+          image: asia.gcr.io/vodea-cloud/vodeamail-frontend
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 1
+            successThreshold: 1
+      restartPolicy: Always
