@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: public
-          image: tanyudii/vodeamail-public
+          image: asia.gcr.io/vodea-cloud/vodeamail-public
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
